@@ -19,7 +19,7 @@ Backend::Backend(QObject *parent)
     history = new History();
     history->setList(database->getScreenshots());
     timer = new QTimer();
-    timer->setInterval(1000);
+    timer->setInterval(60000);
     connect(timer, SIGNAL(timeout()), this, SLOT(cheese()));
 }
 
