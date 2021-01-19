@@ -15,6 +15,7 @@ void Backend::cheese()
 Backend::Backend(QObject *parent)
 {
     Q_UNUSED(parent)
+
     database = new Database();
     history = new History();
     history->setList(database->getScreenshots());
@@ -42,8 +43,7 @@ QString Backend::pressPause() {
 
 void Backend::handleResults(const double &simular_procent, const QString path, const QString md5)
 {
-    int id = database->appendScreenshot(path, md5);
-    database->setSimularProcent(id, simular_procent);
+    int id = database->appendScreenshot(path, simular_procent, md5);
     history->append(id, path, simular_procent, md5);
 }
 

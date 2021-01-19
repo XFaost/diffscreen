@@ -7,7 +7,7 @@ bool Database::createDB()
     bool result = query.exec("create table Screenshots (\
                                 id INTEGER PRIMARY KEY AUTOINCREMENT, \
                                 screenshot_path varchar(50) NOT NULL, \
-                                simular_procent REAL, \
+                                simular_procent REAL NOT NULL, \
                                 md5 varchar(32) NOT NULL)");
 
     db.close();
@@ -35,7 +35,7 @@ Database::Database()
     createDB();
 }
 
-int Database::appendScreenshot(QString screenshot_path, QString md5, double simular_procent)
+int Database::appendScreenshot(QString screenshot_path, double simular_procent, QString md5)
 {
     open();
 
@@ -54,22 +54,6 @@ int Database::appendScreenshot(QString screenshot_path, QString md5, double simu
     db.close();
 
     return result;
-}
-
-bool Database::setSimularProcent(int id, double simular_procent)
-{
-    open();
-
-    QSqlQuery query;
-    query.prepare("UPDATE Screenshots SET simular_procent=:simular_procent \
-                    WHERE id=:id");
-    query.bindValue(":simular_procent", simular_procent);
-    query.bindValue(":id", id);
-    bool exec = mod_exec(&query);
-
-    db.close();
-
-    return exec;
 }
 
 std::vector<HistoryItem*> Database::getScreenshots()

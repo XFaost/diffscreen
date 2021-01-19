@@ -14,14 +14,12 @@ void ScreenshotWorker::takeScreenshot(QString *path, QString *md5)
         return;
     }
 
-    *path = createScreenshotName();
+    *path = createScreenshotPath();
 
     QScreen *screen = QGuiApplication::primaryScreen();
-
     QPixmap screenshot = screen->grabWindow(0);
     screenshot.save(*path,"PNG",100);
     *md5 = generateMD5(*path);
-
 }
 
 QString ScreenshotWorker::generateMD5(QString path)
@@ -38,26 +36,31 @@ QString ScreenshotWorker::generateMD5(QString path)
 
 double ScreenshotWorker::compareScreenshots(QString first_path, QString second_path)
 {
-    if(second_path == "")
-        return 0;
+    if(first_path == "" || second_path == "")
+    {
+        qDebug() << "ScreenshotWorker::compareScreenshots() | Один із параметрів пустий" ;
+        return -1;    }
+
 
     QImage firstImage (first_path);
     QImage secondImage (second_path);
-    double totaldiff = 0.0; //holds the number of different pixels
+    double totaldiff = 0.0;
     int h = firstImage.height();
     int w = firstImage.width();
     int hsecond = secondImage.height();
     int wsecond = secondImage.width();
-    if (w != wsecond || h != hsecond) {
-        qDebug() << "Error, pictures must have identical dimensions!" ;
-        return -1;
+    if (w != wsecond || h != hsecond)
+    {
+        qDebug() << "ScreenshotWorker::compareScreenshots() | Помилка, картинки повинні мати однакові розміри!" ;
+        return -2;
     }
-    for (int y = 0; y<h; y++) {
-
+    for (int y = 0; y<h; y++)
+    {
         uint *firstLine = ( uint* )firstImage.scanLine(y);
         uint *secondLine = ( uint* )secondImage.scanLine(y);
 
-        for (int x = 0; x<w; x++) {
+        for (int x = 0; x<w; x++)
+        {
 
             uint pixelFirst = firstLine[x];
             int rFirst = qRed(pixelFirst);
@@ -78,7 +81,7 @@ double ScreenshotWorker::compareScreenshots(QString first_path, QString second_p
     return trunc(result * 100.00) / 100.00;
 }
 
-QString ScreenshotWorker::createScreenshotName()
+QString ScreenshotWorker::createScreenshotPath()
 {
     std::time_t t = std::time(0);
     std::tm* now = std::localtime(&t);

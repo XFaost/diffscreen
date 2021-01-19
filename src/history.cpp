@@ -36,12 +36,6 @@ void History::setList(std::vector<HistoryItem *> m_list)
     emit beginResetModel();
 }
 
-void History::updateItem(const size_t id, const double simular_procent)
-{
-    m_list[id]->setSimularProcent(simular_procent);
-    emit dataChanged(createIndex(0,0), createIndex(rowCount(), 0));
-}
-
 HistoryItem *History::get(int index)
 {
     if (index < 0 || index >= m_list.size())

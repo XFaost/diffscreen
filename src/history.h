@@ -5,6 +5,12 @@
 #include <vector>
 #include <QDebug>
 
+/*!
+    \brief Елемент списку History
+
+    Зберігає у собі усі дані скріншоту з БД
+*/
+
 class HistoryItem : public QObject
 {
     Q_OBJECT
@@ -52,19 +58,50 @@ public:
 
 Q_DECLARE_METATYPE(HistoryItem*)
 
+
+
+/*!
+    \brief Grid View QML модель, відображає історію скріншотів
+
+    У цій моделі елементом списку є клас HistoryItem
+*/
+
 class History : public QAbstractListModel
 {
     Q_OBJECT
 
 public:
     explicit History(QObject* parent = nullptr);
+
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
+
+    /*!
+        \brief Додати скріншот у історію
+
+        Додає на початок списку
+
+        \param [in] id шлях ідентифікатор у БД
+        \param [in] screenshot_path шлях до скріншоту
+        \param [in] simular_procent % того на скільки схожий з попереднім
+        \param [in] md5 хеш скріншоту
+    */
     void append(const size_t id, const QString screenshot_path, const double simular_procent, const QString md5);
+
+    /*!
+        \brief Ініціалізація спику
+
+        \param [in] m_list список скріншотів
+    */
     void setList(std::vector<HistoryItem*> m_list);
-    void updateItem(const size_t id, const double simular_procent);
 
 public slots:
+
+    /*!
+        \brief Отримати елемент списку
+
+        \param [in] index індекс елементу у списку
+    */
     HistoryItem *get(int index);
 
 private:
